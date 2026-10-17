@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WE 壁纸播放器</title>
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <!-- 图标精灵 -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24">
+      <!-- 三角的包围盒向 -1.5 平移，让图形本身在 24×24 里真正居中 -->
+      <path d="M8 5.2v13.6L19 12z" transform="translate(-1.5 0)" />
+    </symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24">
+      <path d="M7 5h3.6v14H7zm6.4 0H17v14h-3.6z" />
+    </symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24">
+      <path d="M7 5h2.3v14H7zm11.5 0v14L9.8 12z" />
+    </symbol>
+    <symbol id="i-next" viewBox="0 0 24 24">
+      <path d="M14.7 5H17v14h-2.3zM5.5 5l8.7 7-8.7 7z" />
+    </symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24">
+      <path d="M6 6h12v12H6z" />
+    </symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24">
+      <path
+        d="M4 9h3l4.2-4.2v14.4L7 15H4zm11.2-1.7a5 5 0 010 9.4l-1-1.7a3 3 0 000-6zm3-2.6a8.6 8.6 0 010 14.6l-1-1.7a6.6 6.6 0 000-11.2z" />
+    </symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24">
+      <path d="M4 9h3l4.2-4.2v14.4L7 15H4z" />
+      <path d="M15.4 9.1l1.4-1.4 2.2 2.2 2.2-2.2 1.4 1.4-2.2 2.2 2.2 2.2-1.4 1.4-2.2-2.2-2.2 2.2-1.4-1.4 2.2-2.2z" />
+    </symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24">
+      <path d="M7 7h9.5v3l4.5-4.5L16.5 1v3H5v7.5h2zm10 10H7.5v-3L3 18.5 7.5 23v-3H19v-7.5h-2z" />
+    </symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24">
+      <path
+        d="M16.5 4l4.5 4.2-4.5 4.2V9.6h-1.7l-2.6 2.9-1.4-1.6 2.1-2.4h2.1V4zM3 7h3.6l3.3 3.8-1.4 1.6L5.9 9H3zm13.5 5l4.5 4.2-4.5 4.2v-2.9h-2.2l-3.2-3.6 1.4-1.6 2.6 2.9h1.4zM3 15h2.9l3.2-3.6 1.4 1.6L7 17H3z" />
+    </symbol>
+    <symbol id="i-fullscreen" viewBox="0 0 24 24">
+      <path d="M4 4h7.2v2.2H6.2V11H4zm8.8 0H20v7h-2.2V6.2h-5zM4 13h2.2v4.8h5V20H4zm13.8 0H20v7h-7.2v-2.2h5z" />
+    </symbol>
+    <symbol id="i-pip" viewBox="0 0 24 24">
+      <path d="M3 5h18v14H3zm2 2v10h14V7zm6.5 4.5H19V16h-7.5z" />
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+      <path d="M12 20.2l-1.3-1.2C6 14.8 3 12.3 3 8.9 3 6.3 5.1 4.2 7.7 4.2c1.5 0 3 .7 4.3 2 1.3-1.3 2.8-2 4.3-2C18.9 4.2 21 6.3 21 8.9c0 3.4-3 5.9-7.7 10.1z"
+        fill="none" stroke="currentColor" stroke-width="1.7" />
+    </symbol>
+    <symbol id="i-heart-fill" viewBox="0 0 24 24">
+      <path d="M12 20.2l-1.3-1.2C6 14.8 3 12.3 3 8.9 3 6.3 5.1 4.2 7.7 4.2c1.5 0 3 .7 4.3 2 1.3-1.3 2.8-2 4.3-2C18.9 4.2 21 6.3 21 8.9c0 3.4-3 5.9-7.7 10.1z" />
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M3 6.6C3 5.2 4.1 4 5.6 4h3.3l2 2.1h7.5C20 6.1 21 7.2 21 8.6v8.8c0 1.4-1 2.6-2.6 2.6H5.6C4.1 20 3 18.8 3 17.4z" />
+    </symbol>
+    <symbol id="i-external" viewBox="0 0 24 24">
+      <path d="M13.6 3H21v7.4h-2.2V6.7l-7.6 7.6-1.6-1.6 7.6-7.6h-3.6zM5 5h6.2v2.2H7.2v9.6h9.6v-4H19V19H5z" />
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24">
+      <path d="M4 5.5h12v2.2H4zm0 5.4h12v2.2H4zm0 5.4h8v2.2H4zm11-1.6l6 3.9-6 3.9z" />
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 24 24">
+      <path d="M11 5.6L4 12l7 6.4V14h9v-4h-9z" />
+    </symbol>
+    <symbol id="i-film" viewBox="0 0 24 24">
+      <path d="M3 5h18v14H3zm2 2v2h2V7zm4 0v2h2V7zm4 0v2h2V7zm4 0v2h2V7zM5 11v2h2v-2zm4 0v2h6v-2zm8 0v2h2v-2zM5 15v2h2v-2zm4 0v2h2v-2zm4 0v2h2v-2zm4 0v2h2v-2z" />
+    </symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24">
+      <path d="M4 4h16v16H4zm2 2v12h12V6zM8 7.6a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zm8 0a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zm-8 6a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zm4-3a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zm4 3a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8z" />
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+      <path
+        d="M12 4a8 8 0 018 8h-2.2A5.8 5.8 0 1012 17.8c1.6 0 3-.6 4.1-1.7l1.6 1.6A8 8 0 1112 4zm7-1v5h-5z" />
+    </symbol>
+  </svg>
+
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"><img src="/mascot.png" alt="DeepSeek 娘" width="26" height="26"></div>
+        <div class="brand-text">
+          <h1>壁纸播放器</h1>
+          <p id="subtitle">正在扫描壁纸…</p>
+        </div>
+      </div>
+
+      <div class="search">
+        <span class="search-icon"><svg class="ic"><use href="#i-film" /></svg></span>
+        <input id="search" type="search" placeholder="搜索标题 / 标签 / 创意工坊 ID…" autocomplete="off" spellcheck="false">
+        <button id="clearSearch" class="icon-btn tiny hidden" title="清空">✕</button>
+      </div>
+
+      <div class="top-actions">
+        <button id="btnRandom" class="icon-btn" title="随机播放一个"><svg class="ic"><use href="#i-dice" /></svg></button>
+        <button id="btnPlayAll" class="icon-btn" title="从第一个开始连播"><svg class="ic"><use href="#i-play" /></svg> <span class="btn-label">全部播放</span></button>
+        <button id="btnRescan" class="icon-btn" title="重新扫描壁纸目录"><svg class="ic"><use href="#i-refresh" /></svg> <span class="btn-label">重新扫描</span></button>
+        <button id="btnHelp" class="icon-btn" title="快捷键与信息">?</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="side-head">
+          <span>筛选</span>
+          <button id="btnResetFilter" class="link-btn">重置</button>
+        </div>
+
+        <section class="filter-group">
+          <h3>文件夹 <span class="muted" id="folderHint"></span></h3>
+          <div id="fFolder" class="chips folders"></div>
+        </section>
+
+        <section class="filter-group">
+          <h3>类型</h3>
+          <div id="fType" class="chips"></div>
+        </section>
+
+        <section class="filter-group">
+          <h3>来源</h3>
+          <div id="fSource" class="chips"></div>
+        </section>
+
+        <section class="filter-group">
+          <h3>状态</h3>
+          <div id="fState" class="chips"></div>
+        </section>
+
+        <section class="filter-group">
+          <h3>标签</h3>
+          <div id="fTags" class="chips tags"></div>
+        </section>
+      </aside>
+
+      <section class="content">
+        <div class="toolbar">
+          <div class="count" id="count">—</div>
+          <div class="toolbar-right">
+            <label class="inline-field">排序
+              <select id="sort">
+                <option value="subscribed">订阅时间</option>
+                <option value="added">最近添加</option>
+                <option value="title">标题</option>
+                <option value="duration">时长</option>
+                <option value="size">体积</option>
+                <option value="weorder">WE 文件夹内顺序</option>
+                <option value="random">随机</option>
+              </select>
+            </label>
+            <button id="btnGroup" class="icon-btn toggle" title="按 Wallpaper Engine 的文件夹分组显示">
+              <svg class="ic"><use href="#i-folder" /></svg> <span class="btn-label">分组</span>
+            </button>
+            <div class="seg" id="density" role="radiogroup" aria-label="卡片大小">
+              <span class="seg-thumb" aria-hidden="true"></span>
+              <button data-size="s" role="radio" aria-checked="false" title="小图标">▦</button>
+              <button data-size="m" role="radio" aria-checked="true" class="active" title="中图标">▩</button>
+              <button data-size="l" role="radio" aria-checked="false" title="大图标">◼</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="grid" class="grid size-m"></div>
+        <div id="empty" class="empty hidden">
+          <div class="empty-emoji">🌙</div>
+          <h2>没有符合条件的壁纸</h2>
+          <p id="emptyHint"></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================== 播放器 ===================== -->
+  <div id="player" class="player hidden">
+    <div class="stage" id="stage">
+      <div class="stage-top" id="stageTop">
+        <button id="btnBack" class="pill"><svg class="ic"><use href="#i-back" /></svg> 返回列表</button>
+        <div class="stage-title">
+          <strong id="playerTitle">—</strong>
+          <span id="playerSub"></span>
+        </div>
+        <div class="stage-actions">
+          <button id="btnFav" class="icon-btn" title="收藏 (C)"><svg class="ic"><use href="#i-heart" /></svg></button>
+          <button id="btnExternal" class="icon-btn" title="用系统默认播放器打开 (E)"><svg class="ic"><use href="#i-external" /></svg>
+            外部播放</button>
+          <button id="btnReveal" class="icon-btn" title="在资源管理器中显示 (O)"><svg class="ic"><use href="#i-folder" /></svg></button>
+          <button id="btnPip" class="icon-btn" title="画中画 (P)"><svg class="ic"><use href="#i-pip" /></svg></button>
+          <button id="btnFullscreen" class="icon-btn" title="全屏 (F)"><svg class="ic"><use href="#i-fullscreen" /></svg></button>
+        </div>
+      </div>
+
+      <!-- 画面区：所有浮层都以它为基准，不会跑到上下控制条上 -->
+      <div class="viewport" id="viewport">
+        <video id="video" playsinline preload="metadata"></video>
+        <img id="fallbackPreview" class="fallback-preview hidden" alt="">
+        <div id="stageMessage" class="stage-message hidden"></div>
+
+        <!-- 中央大圆钮：按需求由 CSS 整组隐藏（.stage-center），播控集中在下方控制条 -->
+        <div class="stage-center">
+          <button id="bigPrev" class="round-btn ghost" title="上一个 (B)"><svg class="ic"><use href="#i-prev" /></svg></button>
+          <button id="bigPlay" class="round-btn" title="播放/暂停 (空格)"><svg class="ic"><use href="#i-play" /></svg></button>
+          <button id="bigNext" class="round-btn ghost" title="下一个 (N)"><svg class="ic"><use href="#i-next" /></svg></button>
+        </div>
+
+        <div id="flash" class="flash"></div>
+      </div>
+
+      <div class="controls" id="controls">
+        <div class="progress-row">
+          <span id="timeCur" class="time">00:00</span>
+          <div class="bar" id="bar" role="slider" tabindex="0" aria-label="播放进度"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="bar-buffer" id="barBuffer"></div>
+            <div class="bar-played" id="barPlayed"><i></i></div>
+          </div>
+          <span id="timeDur" class="time">00:00</span>
+        </div>
+        <div class="buttons-row">
+          <button id="btnPrev" class="icon-btn" title="上一个 (B)"><svg class="ic"><use href="#i-prev" /></svg></button>
+          <button id="btnPlay" class="icon-btn primary" title="播放/暂停 (空格)"><svg class="ic"><use href="#i-pause" /></svg></button>
+          <button id="btnNext" class="icon-btn" title="下一个 (N)"><svg class="ic"><use href="#i-next" /></svg></button>
+          <div class="volume">
+            <button id="btnMute" class="icon-btn" title="静音 (M)"><svg class="ic"><use href="#i-volume" /></svg></button>
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="1">
+          </div>
+          <span id="speedLabel" class="label">倍速</span>
+          <select id="speed" class="mini-select">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+            <option value="3">3×</option>
+          </select>
+          <button id="btnLoop" class="icon-btn toggle" title="单个循环 (R)"><svg class="ic"><use href="#i-loop" /></svg></button>
+          <button id="btnShuffle" class="icon-btn toggle" title="随机播放 (S)"><svg class="ic"><use href="#i-shuffle" /></svg></button>
+          <button id="btnAutonext" class="icon-btn toggle active" title="播放完自动下一个"><svg class="ic"><use href="#i-next" /></svg>
+            自动连播</button>
+          <span id="effectStatus" class="effect-status hidden">
+            <span class="live-dot"></span><span id="effectStatusText">Wallpaper Engine 正在渲染真实效果</span>
+          </span>
+          <button id="btnEffectRaise" class="icon-btn hidden" title="把效果窗口重新贴到画面上">
+            <svg class="ic"><use href="#i-folder" /></svg> 置顶效果
+          </button>
+          <button id="btnEffectClose" class="icon-btn hidden" title="关闭效果窗口，改看官方预览动画">
+            关闭效果
+          </button>
+          <div class="spacer"></div>
+          <button id="btnPlaylist" class="icon-btn toggle" title="显示/隐藏播放列表 (T)"><svg class="ic"><use href="#i-list" /></svg>
+            播放列表 <span id="plCountBadge">0</span></button>
+        </div>
+      </div>
+
+      <!-- 播放列表面板：贴在画面区右侧（窗口模式下不会盖住上下控制条） -->
+      <aside class="playlist" id="playlist">
+        <header>
+          <span>播放列表</span>
+          <span id="plCount" class="muted"></span>
+        </header>
+        <div id="plList" class="pl-list"></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- 右键菜单 -->
+  <div id="ctxMenu" class="ctx-menu hidden"></div>
+
+  <!-- 快捷键 / 信息 -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <header>
+        <h2 id="modalTitle">快捷键</h2>
+        <button id="modalClose" class="icon-btn">✕</button>
+      </header>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+
+</html>
