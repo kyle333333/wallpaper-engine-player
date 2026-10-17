@@ -2,6 +2,10 @@
 
 ![界面预览](docs/screenshot.png)
 
+> **不想装 Python？** 直接下免安装绿色包（约 11 MB，内置运行时）：
+> **[WE-WallpaperPlayer-v1.0.0.zip](https://github.com/kyle333333/wallpaper-engine-player/releases/latest/download/WE-WallpaperPlayer-v1.0.0.zip)**
+> 解压后双击 `启动播放器.exe`。需要 Windows 10/11 + 已装 Wallpaper Engine。
+
 把 **Wallpaper Engine 里已经下载好的壁纸**（Steam 创意工坊 + 我的壁纸）自动整理成一个画廊，
 点一下就能播放其中的视频壁纸 —— 不用再「右键 → 在资源管理器中打开 → 双击视频」。
 
